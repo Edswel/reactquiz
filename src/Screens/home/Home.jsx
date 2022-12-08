@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Button, MenuItem, TextField } from '@mui/material';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +8,34 @@ import MessageBox from '../../components/messageBox/MessageBox';
 function Home({ fetchQuestions }) {
     const [category, setCategory] = useState('');
     const [error, setError] = useState(false);
+    const [cat, setCat] = useState();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCategories = async (category = '') => {
+            try {
+                let cats = [];
+                const response = await axios.get(`http://localhost:3000/categories`);
+                cats = response.data.map((c) => (c.category));
+                console.log(cats);
+                setCat(cats);
+            } catch (error) {
+                <MessageBox>{error}</MessageBox>;
+            }
+        }
+        fetchCategories(category);
+    }, []);
+    // console.log(cat + ' cats');
+    // data.map((c) => (
+    //     console.log(c.category)
+    // ));
 
     const handleSubmit = () => {
         if (!category) {
             setError(true);
         } else {
             setError(false);
-            // fetchQuestions(category);
+            fetchQuestions(category);
             navigate('/quiz');
         }
     }
@@ -44,6 +65,7 @@ function Home({ fetchQuestions }) {
                 <span style={{ fontSize: 30 }}>Settings</span>
                 <div className='Home-options'>
                     {error && <MessageBox>Kindly fill out all required fields.</MessageBox>}
+                    {cat}
                     <TextField
                         label='Username'
                         variant='standard'
