@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, MenuItem, TextField } from '@mui/material';
 import './Home.css';
@@ -6,25 +6,30 @@ import { useNavigate } from 'react-router-dom';
 import MessageBox from '../../components/messageBox/MessageBox';
 
 function Home({ fetchQuestions }) {
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState([]);
+    const [option, setOption] = useState();
     const [error, setError] = useState(false);
-    const [cat, setCat] = useState();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchCategories = async (category = '') => {
-            try {
-                let cats = [];
-                const response = await axios.get(`http://localhost:3000/categories`);
-                cats = response.data.map((c) => (c.category));
-                console.log(cats);
-                setCat(cats);
-            } catch (error) {
-                <MessageBox>{error}</MessageBox>;
-            }
-        }
-        fetchCategories(category);
+        fetch('http://localhost:3000/categories').then((data) => data.json()).then((cat) => setCategory(cat));
     }, []);
+
+    // useEffect(() => {
+    //     const fetchCategories = async (category = '') => {
+    //         try {
+    //             let cats = [];
+    //             const response = await axios.get(`http://localhost:3000/categories`);
+    //             let allCats = response.data.map((c) => (c.category));
+    //             cats.push(allCats)
+    //             console.log(cats);
+    //             setCat(cats);
+    //         } catch (error) {
+    //             <MessageBox>{error}</MessageBox>;
+    //         }
+    //     }
+    //     fetchCategories(category);
+    // }, []);
     // console.log(cat + ' cats');
     // data.map((c) => (
     //     console.log(c.category)
@@ -40,32 +45,12 @@ function Home({ fetchQuestions }) {
         }
     }
 
-    const categories = [
-        {
-            value: 'General Knowledge',
-            label: '$',
-        },
-        {
-            value: 'Science',
-            label: '€',
-        },
-        {
-            value: 'Politics',
-            label: '฿',
-        },
-        {
-            value: 'History',
-            label: '¥',
-        },
-    ];
-
     return (
         <div className='Home'>
             <div className='Home-settings'>
                 <span style={{ fontSize: 30 }}>Settings</span>
                 <div className='Home-options'>
                     {error && <MessageBox>Kindly fill out all required fields.</MessageBox>}
-                    {cat}
                     <TextField
                         label='Username'
                         variant='standard'
@@ -76,12 +61,12 @@ function Home({ fetchQuestions }) {
                         label="Categories"
                         variant="standard"
                         style={{ marginBottom: 30 }}
-                        onChange={(e) => setCategory(e.target.value)}
-                        value={category}
+                        onChange={(e) => setOption(e.target.value)}
+                    // value={option}
                     >
-                        {categories.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.value}
+                        {category.map((cat, index) => (
+                            <MenuItem key={index}>
+                                {cat.category}
                             </MenuItem>
                         ))}
                     </TextField>

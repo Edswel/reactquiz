@@ -6,6 +6,7 @@ import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
 import Home from './Screens/home/Home';
 import Quiz from './Screens/quiz/Quiz';
+import Results from './Screens/results/Results';
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home categories={categories} fetchQuestions={fetchQuestions} />} exact></Route>
           <Route path='/quiz' element={<Quiz />} exact></Route>
+          <Route path='/results' element={<Results />} exact></Route>
         </Routes>
       </div>
       <Footer />
